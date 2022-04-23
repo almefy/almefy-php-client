@@ -314,7 +314,6 @@ class Client
 
         $claims = [
             'iss' => $this->key,
-            'sub' => $this->key,
             'aud' => $this->api,
             'iat' => time(),
             'nbf' => time(),
