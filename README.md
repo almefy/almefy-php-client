@@ -69,7 +69,7 @@ try {
     echo 'Could not connect to Almefy service: '.$e->getMessage();
 }
 ```
-_Notice: Check out the [API Enrollment Reference](/api/reference.html#enroll-identity) for all available options._
+_Notice: Check out the [API Enrollment Reference](https://docs.almefy.com/api/reference.html#enroll-identity) for all available options._
 
 This process creates or uses an existing identity and sends out an enrollment email with a QR Code inside, that needs to
 be scanned with the Almefy app to provision it. Once done, the enrollment is completed, and the user is ready to
