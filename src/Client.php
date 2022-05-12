@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.8.8';
+    const VERSION = '0.8.9';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -375,6 +375,9 @@ class Client
 
     private function jsonEncode($data)
     {
+        if (empty($data))
+            return null;
+
         try {
             return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         } catch (Exception $exception) {
@@ -384,6 +387,9 @@ class Client
 
     private function jsonDecode($json)
     {
+        if (empty($json))
+            return array();
+
         try {
             return json_decode($json, true, self::JSON_DEFAULT_DEPTH);
         } catch (Exception $exception) {
