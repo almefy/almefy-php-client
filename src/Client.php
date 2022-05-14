@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.0';
+    const VERSION = '0.9.1';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -41,9 +41,6 @@ class Client
 
     const ONE_STEP_ENROLLMENT = 'ONE_STEP_ENROLLMENT';
     const TWO_STEP_ENROLLMENT = 'TWO_STEP_ENROLLMENT';
-
-    const QR_CODE = 'QR_CODE';
-    const SMART_IMAGE = 'SMART_IMAGE';
 
     /**
      * @var string
@@ -199,11 +196,23 @@ class Client
     }
 
     /**
+     * @deprecated Client::authenticate should be used instead
+     *
      * @param AuthenticationChallenge $token
      *
      * @return bool
      */
     public function verifyToken($token)
+    {
+        return $this->authenticate($token);
+    }
+
+    /**
+     * @param AuthenticationChallenge $token
+     *
+     * @return bool
+     */
+    public function authenticate($token)
     {
         try {
             $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
