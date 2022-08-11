@@ -43,7 +43,7 @@ class Identity
     /**
      * @var string
      */
-    private $alias;
+    private $nickname;
 
     /**
      * @var string
@@ -62,17 +62,17 @@ class Identity
      * @param string $createdAt
      * @param bool $locked
      * @param string $identifier
-     * @param string $alias
+     * @param string $nickname
      * @param string $name
      * @param Token[] $tokens
      */
-    public function __construct($id, $createdAt, $locked, $identifier, $alias, $name, array $tokens)
+    public function __construct($id, $createdAt, $locked, $identifier, $nickname, $name, array $tokens)
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
         $this->locked = $locked;
         $this->identifier = $identifier;
-        $this->alias = $alias;
+        $this->nickname = $nickname;
         $this->name = $name;
         $this->tokens = $tokens;
     }
@@ -112,9 +112,9 @@ class Identity
     /**
      * @return string
      */
-    public function getAlias()
+    public function getNickname()
     {
-        return $this->alias;
+        return $this->nickname;
     }
 
     /**
@@ -144,7 +144,7 @@ class Identity
         $createdAt = $array['createdAt'] ?: null;
         $locked = $array['locked'] ?: false;
         $identifier = $array['identifier'] ?: null;
-        $alias = $array['alias'] ?: null;
+        $nickname = $array['nickname'] ?: null;
         $name = $array['name'] ?: null;
         $tokens = [];
 
@@ -152,7 +152,7 @@ class Identity
             $tokens[] = Token::fromArray($item);
         }
 
-        return new Identity($id, $createdAt, $locked, $identifier, $alias, $name, $tokens);
+        return new Identity($id, $createdAt, $locked, $identifier, $nickname, $name, $tokens);
     }
 
 }
