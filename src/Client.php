@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.1';
+    const VERSION = '0.9.2';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -144,7 +144,7 @@ class Client
     {
         $defaults = [
             'enrollmentType'  => Client::ONE_STEP_ENROLLMENT,
-            'alias'           => '',
+            'nickname'        => null,
             'sendEmail'       => false,
             'sendEmailTo'     => '',
             'sendEmailLocale' => 'en_US'
@@ -190,9 +190,14 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/identities/%s', $this->api, urlencode($identifier)));
     }
 
+    /**
+     * @param $id
+     *
+     * @return void
+     */
     public function deleteToken($id)
     {
-        $response = $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/devices/%s', $this->api, $id));
+        $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
     /**
