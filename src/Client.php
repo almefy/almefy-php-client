@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2022 Almefy GmbH
+ * Copyright (c) 2022 ALMEFY GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.2';
+    const VERSION = '0.9.3';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
