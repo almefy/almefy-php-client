@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2022 Almefy GmbH
+ * Copyright (c) 2022 ALMEFY GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ class ServerException extends TransportException
             $this->status = $content['status'];
             $this->title  = $content['title'];
             $this->detail = $content['detail'] ?: (self::$statusTexts[$status] ?: self::$statusTexts[500]);
-            $this->errors = $content['errors'] ?: array();
+            $this->errors = isset($content['errors']) ? $content['errors'] : array();
         } else {
             $this->status = $status;
             $this->title = 'An error occurred';
