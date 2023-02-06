@@ -104,10 +104,18 @@ class Session
         return $this->updatedAt;
     }
 
-    public function withUpdatedExpiration(): Session
+    public function withUpdatedExpiration(string $updatedAt, string $expiresAt): Session
     {
-        $this->updatedAt = date(DATE_ATOM);
-        $this->expiresAt = ((new \DateTime($this->updatedAt))->setTimestamp(time() + 360))->format(DATE_ATOM);
+        $this->updatedAt = $updatedAt;
+        $this->expiresAt = $expiresAt;
+
+        return $this;
+    }
+
+    public function withUpdateAt(?string $updatedAt = null): Session
+    {
+        $this->updatedAt = $updatedAt ?? date(DATE_ATOM);
+
         return $this;
     }
 
@@ -122,6 +130,9 @@ class Session
         $createdAt = $array['createdAt'] ?? date(DATE_ATOM);
         $identifier = $array['identityIdentifier'] ?? null;
         $expires = $array['expiresAt'] ?? null;
+        if (is_int($expires)) {
+            $expires = date(DATE_ATOM, $expires);
+        }
         $updatedAt = $array['updatedAt'] ?? date(DATE_ATOM);
 
         return new Session($id, $createdAt, $identifier, $expires, $updatedAt);
