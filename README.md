@@ -7,7 +7,7 @@ A simple PHP wrapper for the Almefy API.
 Below is a striped down guide how to integrate Almefy in your PHP project to test it easily. We are already
 preparing a comprehensive documentation covering all possible use cases and parameters. So stay tuned.
 
-_Please notice: this document is a work in progress and currently addresses PHP 5.6 for backward compatibility._
+_Please notice: this document is a work in progress and currently addresses PHP 8.0 for backward compatibility._
 
 ### Prerequisites
 
@@ -25,7 +25,7 @@ ALMEFY_SECRET=...
 **Almefy PHP SDK** is available on Packagist as the [almefy/sdk](http://packagist.org/packages/almefy/sdk)
 package. Run `composer require almefy/sdk` from the root of your project in terminal, and you are done. If you
 cannot use `composer` for any reasons you can download the [latest version](https://github.com/almefy/almefy-sdk-php/releases)
-from GitHub. The minimum PHP version currently supported is 5.6.
+from GitHub. The minimum PHP version currently supported is 8.0.
 
 ### Client Initialization
 
