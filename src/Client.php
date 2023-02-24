@@ -134,6 +134,37 @@ class Client
         return Identity::fromArray($response);
     }
 
+    public function getSession(string $sessionsId)
+    {
+        $response = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionsId));
+
+        return Session::fromArray($response ?? []);
+    }
+
+    public function getSessions(array $sessionsToUpdate = [])
+    {
+        if (count($sessionsToUpdate) > 0) {
+            return $this->updateSessions($sessionsToUpdate ?? []);
+        }
+
+        $response = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/sessions', $this->api));
+
+        return Session::fromSessionArray($response['items'] ?? []);
+    }
+
+    public function updateSessions(array $sessions = [])
+    {
+        $data = array_map(static fn (Session $session) => [
+            'id' => $session->getId(),
+            'clientSessionUpdatedAt' => $session->getUpdatedAt(),
+            'clientSessionExpiresAt' => $session->getExpiresAt(),
+        ], $sessions);
+
+        $response = $this->doRequest(self::PATCH_REQUEST, sprintf('%s/v1/entity/sessions', $this->api), $data);
+
+        return Session::fromSessionArray($response['items'] ?? []);
+    }
+
     /**
      * @param $identifier
      * @param array $options
@@ -220,13 +251,10 @@ class Client
     public function authenticate($token)
     {
         try {
-            $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
+            return $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
                 'challenge' => $token->getChallenge(),
                 'otp' => $token->getOtp()
             ]);
-
-            return true;
-
         } catch (TransportException $e) {
         }
 
