@@ -107,6 +107,20 @@ class Client
         ]);
     }
 
+    public function getConfiguration()
+    {
+        $result = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/configuration', $this->api));
+
+        return Configuration::fromArray($result);
+    }
+
+    public function setConfiguration(array $settings)
+    {
+        $result = $this->doRequest(self::PATCH_REQUEST, sprintf('%s/v1/entity/configuration', $this->api), $settings);
+
+        return Configuration::fromArray($result);
+    }
+
     /**
      * @return Identity[]
      */
@@ -291,7 +305,8 @@ class Client
         $headers = [
             'Accept: application/json',
             'Authorization: Bearer '.$this->createApiToken($method, $url, $body),
-            'User-Agent: Almefy PHP Client '.self::VERSION
+            'User-Agent: Almefy PHP Client '.self::VERSION.' (PHP '.phpversion().')',
+            'X-Client-Version: '.self::VERSION
         ];
 
         if (in_array($method, [self::POST_REQUEST, self::PUT_REQUEST, self::PATCH_REQUEST])) {
