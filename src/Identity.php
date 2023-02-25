@@ -20,53 +20,27 @@ namespace Almefy;
 class Identity
 {
 
-    /**
-     * @var string
-     */
-    private $id;
+    private ?string $id;
 
-    /**
-     * @var string
-     */
-    private $createdAt;
+    private ?string $createdAt;
 
-    /**
-     * @var bool
-     */
-    private $locked;
+    private bool $locked;
 
-    /**
-     * @var string
-     */
-    private $identifier;
+    private ?string $identifier;
 
-    /**
-     * @var string
-     */
-    private $nickname;
+    private ?string $nickname;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name;
 
     /**
      * @var Token[]
      */
-    private $tokens;
+    private array $tokens;
 
     /**
      * Identity constructor.
-     *
-     * @param string $id
-     * @param string $createdAt
-     * @param bool $locked
-     * @param string $identifier
-     * @param string $nickname
-     * @param string $name
-     * @param Token[] $tokens
      */
-    public function __construct($id, $createdAt, $locked, $identifier, $nickname, $name, array $tokens)
+    public function __construct(?string $id, ?string $createdAt, bool $locked, ?string $identifier, ?string $nickname, ?string $name, array $tokens = [])
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -77,50 +51,32 @@ class Identity
         $this->tokens = $tokens;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return bool
-     */
-    public function isLocked()
+    public function isLocked(): bool
     {
         return $this->locked;
     }
 
-    /**
-     * @return string
-     */
-    public function getIdentifier()
+    public function getIdentifier(): ?string
     {
         return $this->identifier;
     }
 
-    /**
-     * @return string
-     */
-    public function getNickname()
+    public function getNickname(): ?string
     {
         return $this->nickname;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -128,24 +84,19 @@ class Identity
     /**
      * @return Token[]
      */
-    public function getTokens()
+    public function getTokens(): array
     {
         return $this->tokens;
     }
 
-    /**
-     * @param $array
-     *
-     * @return Identity
-     */
-    public static function fromArray($array)
+    public static function fromArray(array $array = []): Identity
     {
-        $id = $array['id'] ?: null;
-        $createdAt = $array['createdAt'] ?: null;
-        $locked = $array['locked'] ?: false;
-        $identifier = $array['identifier'] ?: null;
-        $nickname = $array['nickname'] ?: null;
-        $name = $array['name'] ?: null;
+        $id = $array['id'] ?? null;
+        $createdAt = $array['createdAt'] ?? null;
+        $locked = $array['locked'] ?? false;
+        $identifier = $array['identifier'] ?? null;
+        $nickname = $array['nickname'] ?? null;
+        $name = $array['name'] ?? null;
         $tokens = [];
 
         foreach ($array['tokens'] as $item) {

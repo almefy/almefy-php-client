@@ -20,41 +20,20 @@ namespace Almefy;
 class Token
 {
 
-    /**
-     * @var string
-     */
-    private $id;
+    private ?string $id;
 
-    /**
-     * @var string
-     */
-    private $createdAt;
+    private ?string $createdAt;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private ?string $name;
 
-    /**
-     * @var string
-     */
-    private $label;
+    private ?string $label;
 
-    /**
-     * @var string
-     */
-    private $model;
+    private ?string $model;
 
     /**
      * Device constructor.
-     *
-     * @param string $id
-     * @param string $createdAt
-     * @param string $name
-     * @param string $label
-     * @param string $model
      */
-    public function __construct($id, $createdAt, $name, $label, $model)
+    public function __construct(?string $id, ?string $createdAt, ?string $name, ?string $label, ?string $model)
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -63,58 +42,38 @@ class Token
         $this->model = $model;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getLabel()
+    public function getLabel(): ?string
     {
         return $this->label;
     }
 
-    /**
-     * @return string
-     */
-    public function getModel()
+    public function getModel(): ?string
     {
         return $this->model;
     }
 
-    /**
-     * @param $array
-     *
-     * @return Token
-     */
-    public static function fromArray($array)
+    public static function fromArray(array $array = []): Token
     {
-        $id    = $array['id'] ?:  null;
-        $createdAt = $array['createdAt'] ?: null;
-        $name  = $array['name'] ?: null;
-        $label = $array['label'] ?: null;
-        $model = $array['model'] ?: null;
+        $id    = $array['id'] ??  null;
+        $createdAt = $array['createdAt'] ?? null;
+        $name  = $array['name'] ?? null;
+        $label = $array['label'] ?? null;
+        $model = $array['model'] ?? null;
 
         return new Token($id, $createdAt, $name, $label, $model);
     }

@@ -20,41 +20,20 @@ namespace Almefy;
 class EnrollmentToken
 {
 
-    /**
-     * @var string
-     */
-    private $id;
+    private ?string $id;
 
-    /**
-     * @var string
-     */
-    private $createdAt;
+    private ?string $createdAt;
 
-    /**
-     * @var string
-     */
-    private $expiresAt;
+    private ?string $expiresAt;
 
-    /**
-     * @var string
-     */
-    private $base64ImageData;
+    private ?string $base64ImageData;
 
-    /**
-     * @var Identity
-     */
-    private $identity;
+    private ?Identity $identity;
 
     /**
      * ProvisioningToken constructor.
-     *
-     * @param string $id
-     * @param string $createdAt
-     * @param string $expiresAt
-     * @param string $base64ImageData
-     * @param Identity $identity
      */
-    public function __construct($id, $createdAt, $expiresAt, $base64ImageData, Identity $identity)
+    public function __construct(?string $id, ?string $createdAt, ?string $expiresAt, ?string $base64ImageData, ?Identity $identity)
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -63,57 +42,37 @@ class EnrollmentToken
         $this->identity = $identity;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getExpiresAt()
+    public function getExpiresAt(): ?string
     {
         return $this->expiresAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getBase64ImageData()
+    public function getBase64ImageData(): ?string
     {
         return $this->base64ImageData;
     }
 
-    /**
-     * @return Identity
-     */
-    public function getIdentity()
+    public function getIdentity(): ?Identity
     {
         return $this->identity;
     }
 
-    /**
-     * @param $array
-     *
-     * @return EnrollmentToken
-     */
-    public static function fromArray($array)
+    public static function fromArray(array $array = []): EnrollmentToken
     {
-        $id = $array['id'] ?: null;
-        $createdAt = $array['createdAt'] ?: null;
-        $expiresAt = $array['expiresAt'] ?: null;
-        $base64ImageData = $array['base64ImageData'] ?: null;
+        $id = $array['id'] ?? null;
+        $createdAt = $array['createdAt'] ?? null;
+        $expiresAt = $array['expiresAt'] ?? null;
+        $base64ImageData = $array['base64ImageData'] ?? null;
         $identity = Identity::fromArray($array['identity']);
 
         return new EnrollmentToken($id, $createdAt, $expiresAt, $base64ImageData, $identity);

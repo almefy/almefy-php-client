@@ -20,69 +20,42 @@ namespace Almefy;
 class AuthenticationChallenge
 {
 
-    /**
-     * @var string
-     */
-    private $challenge;
+    private ?string $challenge;
 
-    /**
-     * @var string
-     */
-    private $identifier;
+    private ?string $identifier;
 
-    /**
-     * @var string
-     */
-    private $otp;
+    private ?string $otp;
 
     /**
      * AuthenticationToken constructor.
-     *
-     * @param string $challenge
-     * @param string $identifier
-     * @param string $otp
      */
-    public function __construct($challenge, $identifier, $otp)
+    public function __construct(?string $challenge, ?string $identifier, ?string $otp)
     {
         $this->challenge = $challenge;
         $this->identifier = $identifier;
         $this->otp = $otp;
     }
 
-    /**
-     * @return string
-     */
-    public function getChallenge()
+    public function getChallenge(): ?string
     {
         return $this->challenge;
     }
 
-    /**
-     * @return string
-     */
-    public function getIdentifier()
+    public function getIdentifier(): ?string
     {
         return $this->identifier;
     }
 
-    /**
-     * @return string
-     */
-    public function getOtp()
+    public function getOtp(): ?string
     {
         return $this->otp;
     }
 
-    /**
-     * @param $array
-     *
-     * @return AuthenticationChallenge
-     */
-    public static function fromArray($array)
+    public static function fromArray(array $array = []): AuthenticationChallenge
     {
-        $challenge = $array['challenge'] ?: null;
-        $identifier = $array['identifier'] ?: null;
-        $otp = $array['otp'] ?: null;
+        $challenge = $array['challenge'] ?? null;
+        $identifier = $array['identifier'] ?? null;
+        $otp = $array['otp'] ?? null;
 
         return new AuthenticationChallenge($challenge, $identifier, $otp);
     }

@@ -30,7 +30,7 @@ class ServerException extends TransportException
      *
      * @var array
      */
-    private static $statusTexts = [
+    private static array $statusTexts = [
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
@@ -95,25 +95,13 @@ class ServerException extends TransportException
         511 => 'Network Authentication Required',
     ];
 
-    /**
-     * @var string
-     */
-    private $title;
+    private string $title;
 
-    /**
-     * @var int
-     */
-    private $status;
+    private int $status;
 
-    /**
-     * @var string
-     */
-    private $detail;
+    private string $detail;
 
-    /**
-     * @var array
-     */
-    private $errors;
+    private array $errors;
 
     public function __construct($content = 'An error occurred', $status = 500)
     {
@@ -121,12 +109,12 @@ class ServerException extends TransportException
             $this->status = $content['status'];
             $this->title  = $content['title'];
             $this->detail = $content['detail'] ?: (self::$statusTexts[$status] ?: self::$statusTexts[500]);
-            $this->errors = isset($content['errors']) ? $content['errors'] : array();
+            $this->errors = $content['errors'] ?? [];
         } else {
             $this->status = $status;
             $this->title = 'An error occurred';
-            $this->detail = isset(self::$statusTexts[$status]) ? self::$statusTexts[$status] : self::$statusTexts[500];
-            $this->errors = array();
+            $this->detail = self::$statusTexts[$status] ?? self::$statusTexts[500];
+            $this->errors = [];
         }
 
         $message = $this->status.' '.$this->detail;
@@ -134,26 +122,17 @@ class ServerException extends TransportException
         parent::__construct($message, $this->status);
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }
 
-    /**
-     * @return array
-     */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }

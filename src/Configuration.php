@@ -56,11 +56,11 @@ class Configuration
         return $this->sessionSupport;
     }
 
-    public static function fromArray($array): Configuration
+    public static function fromArray(array $array = []): Configuration
     {
-        $websiteUrl        = $array['websiteUrl'] ?: null;
-        $authenticationUrl = $array['authenticationUrl'] ?: null;
-        $registrationUrl   = $array['registrationUrl'] ?: null;
+        $websiteUrl        = $array['websiteUrl'] ?? null;
+        $authenticationUrl = $array['authenticationUrl'] ?? null;
+        $registrationUrl   = $array['registrationUrl'] ?? null;
         $sessionSupport    = $array['supportSessions'] === true;
 
         return new Configuration($websiteUrl, $authenticationUrl, $registrationUrl, $sessionSupport);

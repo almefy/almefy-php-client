@@ -20,42 +20,21 @@ namespace Almefy;
 class Session
 {
     public const DEFAULT_TTL = 350;
-    /**
-     * @var string
-     */
-    private $id;
 
-    /**
-     * @var string
-     */
-    private $createdAt;
+    private ?string $id;
 
-    /**
-     * @var string
-     */
-    private $identifier;
+    private ?string $createdAt;
 
-    /**
-     * @var string
-     */
-    private $expiresAt;
+    private ?string $identifier;
 
-    /**
-     * @var string
-     */
-    private $updatedAt;
+    private ?string $expiresAt;
 
+    private ?string $updatedAt;
 
     /**
      * Session constructor.
-     *
-     * @param string $id
-     * @param string $createdAt
-     * @param string $identifier
-     * @param string $expires
-     * @param string $updatedAt
      */
-    public function __construct($id, $createdAt, $identifier, $expires, $updatedAt)
+    public function __construct(?string $id, ?string $createdAt, ?string $identifier, ?string $expires, ?string $updatedAt)
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -64,42 +43,27 @@ class Session
         $this->updatedAt = $updatedAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?string
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getIdentifier()
+    public function getIdentifier(): ?string
     {
         return $this->identifier;
     }
 
-    /**
-     * @return string
-     */
-    public function getExpiresAt()
+    public function getExpiresAt(): ?string
     {
         return $this->expiresAt;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
     }
@@ -119,12 +83,7 @@ class Session
         return $this;
     }
 
-    /**
-     * @param $array
-     *
-     * @return Session
-     */
-    public static function fromArray($array)
+    public static function fromArray($array): Session
     {
         $id = $array['id'] ?? null;
         $createdAt = $array['createdAt'] ?? date(DATE_ATOM);
@@ -138,7 +97,10 @@ class Session
         return new Session($id, $createdAt, $identifier, $expires, $updatedAt);
     }
 
-    public static function fromSessionArray($array)
+    /**
+     * @return Session[]
+     */
+    public static function fromSessionArray($array): array
     {
         $sessions = [];
         foreach ($array as $key => $item) {

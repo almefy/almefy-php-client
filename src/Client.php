@@ -42,38 +42,20 @@ class Client
     const ONE_STEP_ENROLLMENT = 'ONE_STEP_ENROLLMENT';
     const TWO_STEP_ENROLLMENT = 'TWO_STEP_ENROLLMENT';
 
-    /**
-     * @var string
-     */
-    private $api;
+    private string $api;
 
-    /**
-     * @var string
-     */
-    private $key;
+    private string $key;
 
-    /**
-     * @var string
-     */
-    private $secret;
+    private string $secret;
 
-    /**
-     * cURL synchronous requests handle.
-     *
-     * @var resource|null
-     */
-    private $handle;
+    private mixed $handle = null;
 
     /**
      * Client constructor.
      *
-     * @param string $key
-     * @param string $secret
-     * @param string $api
-     *
      * @throws InvalidArgumentException
      */
-    public function __construct($key, $secret, $api = 'https://api.almefy.com')
+    public function __construct(string $key, string $secret, $api = 'https://api.almefy.com')
     {
         if (empty($key) || empty($secret)) {
             throw new InvalidArgumentException('Invalid "key" or "secret" while initiating Almefy client');
@@ -84,47 +66,41 @@ class Client
         $this->api = $api;
     }
 
-    /**
-     * @return string
-     */
-    public function getApi()
+    public function getApi(): string
     {
         return $this->api;
     }
 
-    /**
-     * @return string
-     */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
 
-    public function check()
+    public function check(): void
     {
         $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/check', $this->api), [
             'message' => 'ping'
         ]);
     }
 
-    public function getConfiguration()
+    public function getConfiguration(): Configuration
     {
         $result = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/configuration', $this->api));
 
-        return Configuration::fromArray($result);
+        return Configuration::fromArray($result ?? []);
     }
 
-    public function setConfiguration(array $settings)
+    public function setConfiguration(array $settings): Configuration
     {
         $result = $this->doRequest(self::PATCH_REQUEST, sprintf('%s/v1/entity/configuration', $this->api), $settings);
 
-        return Configuration::fromArray($result);
+        return Configuration::fromArray($result ?? []);
     }
 
     /**
      * @return Identity[]
      */
-    public function getIdentities()
+    public function getIdentities(): array
     {
         $response = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/identities', $this->api));
 
@@ -136,26 +112,21 @@ class Client
         return $identities;
     }
 
-    /**
-     * @param $identifier
-     *
-     * @return Identity
-     */
-    public function getIdentity($identifier)
+    public function getIdentity(string $identifier): Identity
     {
         $response = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/identities/%s', $this->api, urlencode($identifier)));
 
-        return Identity::fromArray($response);
+        return Identity::fromArray($response ?? []);
     }
 
-    public function getSession(string $sessionsId)
+    public function getSession(string $sessionsId): Session
     {
         $response = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionsId));
 
         return Session::fromArray($response ?? []);
     }
 
-    public function getSessions(array $sessionsToUpdate = [])
+    public function getSessions(array $sessionsToUpdate = []): array
     {
         if (count($sessionsToUpdate) > 0) {
             return $this->updateSessions($sessionsToUpdate ?? []);
@@ -166,7 +137,7 @@ class Client
         return Session::fromSessionArray($response['items'] ?? []);
     }
 
-    public function updateSessions(array $sessions = [])
+    public function updateSessions(array $sessions = []): array
     {
         $data = array_map(static fn (Session $session) => [
             'id' => $session->getId(),
@@ -179,13 +150,7 @@ class Client
         return Session::fromSessionArray($response['items'] ?? []);
     }
 
-    /**
-     * @param $identifier
-     * @param array $options
-     *
-     * @return EnrollmentToken
-     */
-    public function enrollIdentity($identifier, $options = [])
+    public function enrollIdentity(string $identifier, array $options = []): EnrollmentToken
     {
         $defaults = [
             'enrollmentType'  => Client::ONE_STEP_ENROLLMENT,
@@ -203,72 +168,38 @@ class Client
         return EnrollmentToken::fromArray($response);
     }
 
-    /**
-     * @param $identifier
-     * @param array $options
-     *
-     * @return EnrollmentToken
-     *
-     * @deprecated Use enrollIdentity() instead
-     */
-    public function provisionIdentity($identifier, $options = [])
+    public function provisionIdentity(string $identifier, array $options = []): EnrollmentToken
     {
         return $this->enrollIdentity($identifier, $options);
     }
 
-    /**
-     * @param string $oldIdentifier
-     * @param string $newIdentifier
-     */
-    public function renameIdentity($oldIdentifier, $newIdentifier)
+    public function renameIdentity(string $oldIdentifier, string $newIdentifier): void
     {
         $this->doRequest(self::PATCH_REQUEST, sprintf('%s/v1/entity/identities/%s/rename', $this->api, urlencode($oldIdentifier)), [
             'identifier' => $newIdentifier
         ]);
     }
 
-    /**
-     * @param string $identifier
-     */
-    public function deleteIdentity($identifier)
+    public function deleteIdentity(string $identifier): void
     {
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/identities/%s', $this->api, urlencode($identifier)));
     }
 
-    /**
-     * @param $id
-     *
-     * @return void
-     */
-    public function deleteToken($id)
+    public function deleteToken(string $id): void
     {
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    /**
-     * @deprecated Client::authenticate should be used instead
-     *
-     * @param AuthenticationChallenge $token
-     *
-     * @return bool
-     */
-    public function verifyToken($token)
-    {
-        return $this->authenticate($token);
-    }
-
-    /**
-     * @param AuthenticationChallenge $token
-     *
-     * @return bool
-     */
-    public function authenticate($token)
+    public function authenticate(AuthenticationChallenge $token): bool
     {
         try {
-            return $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
+            $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
                 'challenge' => $token->getChallenge(),
                 'otp' => $token->getOtp()
             ]);
+
+            return true;
+
         } catch (TransportException $e) {
         }
 
@@ -276,15 +207,9 @@ class Client
     }
 
     /**
-     * @param string $method
-     * @param string $url
-     * @param array $data
-     *
-     * @return mixed
-     *
      * @throws NetworkException|ServerException
      */
-    protected function doRequest($method, $url, $data = null)
+    protected function doRequest(string $method, string $url, array $data = null): mixed
     {
         if (is_resource($this->handle)) {
             curl_reset($this->handle);
@@ -362,7 +287,7 @@ class Client
         return $content;
     }
 
-    private function createApiToken($method, $url, $body = '')
+    private function createApiToken(string $method, string $url, string $body = ''): string
     {
         $header = [
             'typ' => 'JWT',
@@ -390,16 +315,11 @@ class Client
         return implode('.', $payload);
     }
 
-    public function createJwt($claims = [])
+    public function createJwt($claims = []): void
     {
     }
 
-    /**
-     * @param $jwt
-     * @return AuthenticationChallenge
-     *@throws RuntimeException
-     */
-    public function decodeJwt($jwt)
+    public function decodeJwt(string $jwt): AuthenticationChallenge
     {
         $tks = explode('.', $jwt);
         if (count($tks) != 3) {
@@ -430,7 +350,7 @@ class Client
         return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp']);
     }
 
-    private function jsonEncode($data)
+    private function jsonEncode($data): bool|string|null
     {
         if (empty($data))
             return null;
@@ -454,12 +374,12 @@ class Client
         }
     }
 
-    private function base64UrlEncode($data)
+    private function base64UrlEncode($data): array|string
     {
         return str_replace('=', '', strtr(base64_encode($data), '+/', '-_'));
     }
 
-    private function base64UrlDecode($data)
+    private function base64UrlDecode($data): string
     {
         $remainder = strlen($data) % self::BASE64_PADDING_LENGTH;
 
