@@ -1,9 +1,9 @@
 {
-  "name": "almefy/sdk",
+  "name": "almefy/client",
   "type": "library",
   "description": "PHP Wrapper for the Almefy API",
   "keywords": ["authentication", "login", "almefy"],
-  "homepage": "https://almefy.me",
+  "homepage": "https://almefy.com",
   "license": "Apache-2.0",
   "authors": [
     {
