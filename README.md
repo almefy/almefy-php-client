@@ -1,13 +1,13 @@
-# Almefy PHP SDK
+# Almefy PHP Client
 
-A simple PHP wrapper for the Almefy API.
+A simple dependency-free PHP wrapper for the Almefy API.
 
 ## Quick Guide
 
-Below is a striped down guide how to integrate Almefy in your PHP project to test it easily. We are already
+Below is a quick guide how to integrate Almefy in your PHP project to test it easily. We are already
 preparing a comprehensive documentation covering all possible use cases and parameters. So stay tuned.
 
-_Please notice: this document is a work in progress and currently addresses PHP 8.0 for backward compatibility._
+_Please notice: this document is work in progress._
 
 ### Prerequisites
 
@@ -22,14 +22,14 @@ ALMEFY_SECRET=...
 
 ### Installation
 
-**Almefy PHP SDK** is available on Packagist as the [almefy/sdk](http://packagist.org/packages/almefy/sdk)
-package. Run `composer require almefy/sdk` from the root of your project in terminal, and you are done. If you
-cannot use `composer` for any reasons you can download the [latest version](https://github.com/almefy/almefy-sdk-php/releases)
+**Almefy PHP Client** is available on Packagist as the [almefy/client](http://packagist.org/packages/almefy/client)
+package. Run `composer require almefy/client` from the root of your project in terminal, and you are done. If you
+cannot use `composer` for any reasons you can download the [latest version](https://github.com/almefy/almefy-php-client/releases)
 from GitHub. The minimum PHP version currently supported is 8.0.
 
 ### Client Initialization
 
-Once you have the SDK installed in your project, you will need to instantiate a Client object. This example assumes
+Once you have the package installed, you will need to instantiate a Client object. This example assumes
 that you store the secrets in some environment variables:
 
 ```php
@@ -40,7 +40,7 @@ $client = new \Almefy\Client($_ENV['ALMEFY_KEY'], $_ENV['ALMEFY_SECRET']);
 
 Before a user account can be used with the Almefy app, it needs to be enrolled and the device provisioned. The easiest
 way to enroll an account with Almefy is to send the user an email with an enrollment QR Code inside. A good starting point
-could be a "Login with Almefy" button somewhere inside the protected area, which triggers the following process in the
+could be a "Connect with Almefy" button somewhere inside the protected area, which triggers the following process in the
 backend:
 
 ```php
@@ -86,8 +86,8 @@ Add the following few lines to your HTML frontend to show the Almefy image used 
      data-almefy-auth-url="/path/to/auth-controller"></div>
 
 <!-- Load the JavaScript library -->
-<script src="https://cdn.almefy.com/js/almefy-0.8.1.js"
-        integrity="sha384-ouDeQdWqj/ZXOHf8xdH+qmWP9h+0zE7VDRWw3X7uanj81OpYvAh4fjNnQ90gA2Ba"
+<script async src="https://cdn.almefy.com/js/almefy-0.9.8.js"
+        integrity="sha384-YrIFSeu+BqWh1wivbt+Q90LfEPlPMvlrel3UTRT2FWTc8P1HauLvZNQcoRBzCMpo"
         crossorigin="anonymous"></script>
 ```
 
@@ -123,7 +123,7 @@ if (!$user->isEnabled() || !$user->isSubscriptionActive()) {
 The last and important step is to verify and confirm the authentication attempt on the Almefy system:
 
 ```php
-if (!$client->verifyToken($token)) {
+if (!$client->authenticate($token)) {
     // Authentication attempt could not be verified or is invalid
     return false;
 }
@@ -131,7 +131,7 @@ if (!$client->verifyToken($token)) {
 
 _Notice: For security reasons any network or server error will always return false._
 
-At this stage you can authenticate the user by setting up session variables etc. and redirect him to the protected area.
+At this stage you can authenticate the user by setting up session etc. and redirect him to the protected area.
 
 ### License
 The Almefy PHP SDK is licensed under the Apache License, version 2.0.
