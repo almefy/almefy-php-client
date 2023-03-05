@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.3';
+    const VERSION = '1.1.0';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -157,7 +157,9 @@ class Client
             'nickname'        => null,
             'sendEmail'       => false,
             'sendEmailTo'     => '',
-            'sendEmailLocale' => 'en_US'
+            'sendEmailLocale' => 'en_US',
+            'role'            => 'ROLE_USER',
+            'timeout'         => 3600
         ];
 
         $data = array_intersect_key($options, $defaults) + $defaults;
@@ -190,10 +192,10 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    public function authenticate(AuthenticationChallenge $token): bool
+    public function authenticate(AuthenticationChallenge $token): ?Identity
     {
         try {
-            $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
+            $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
                 'challenge' => $token->getChallenge(),
                 'otp' => $token->getOtp()
             ]);
@@ -203,7 +205,7 @@ class Client
         } catch (TransportException $e) {
         }
 
-        return false;
+        return null;
     }
 
     /**
