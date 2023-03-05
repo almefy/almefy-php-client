@@ -30,7 +30,9 @@ class Identity
 
     private ?string $nickname;
 
-    private ?string $name;
+    private ?string $label;
+
+    private string $role;
 
     /**
      * @var Token[]
@@ -40,14 +42,15 @@ class Identity
     /**
      * Identity constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, bool $locked, ?string $identifier, ?string $nickname, ?string $name, array $tokens = [])
+    public function __construct(?string $id, ?string $createdAt, bool $locked, ?string $identifier, ?string $nickname, ?string $label, ?string $role, array $tokens = [])
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
         $this->locked = $locked;
         $this->identifier = $identifier;
         $this->nickname = $nickname;
-        $this->name = $name;
+        $this->label = $label;
+        $this->role = $role;
         $this->tokens = $tokens;
     }
 
@@ -76,9 +79,20 @@ class Identity
         return $this->nickname;
     }
 
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    // For BC compatibility, getLabel() should be used
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->label;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
     }
 
     /**
@@ -96,14 +110,15 @@ class Identity
         $locked = $array['locked'] ?? false;
         $identifier = $array['identifier'] ?? null;
         $nickname = $array['nickname'] ?? null;
-        $name = $array['name'] ?? null;
+        $label = $array['label'] ?? null;
+        $role = $array['role'] ?? null;
         $tokens = [];
 
         foreach ($array['tokens'] as $item) {
             $tokens[] = Token::fromArray($item);
         }
 
-        return new Identity($id, $createdAt, $locked, $identifier, $nickname, $name, $tokens);
+        return new Identity($id, $createdAt, $locked, $identifier, $nickname, $label, $role, $tokens);
     }
 
 }
