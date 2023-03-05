@@ -192,10 +192,10 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    public function authenticate(AuthenticationChallenge $token): ?Identity
+    public function authenticate(AuthenticationChallenge $token): bool
     {
         try {
-            $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
+            $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
                 'challenge' => $token->getChallenge(),
                 'otp' => $token->getOtp()
             ]);
@@ -205,7 +205,7 @@ class Client
         } catch (TransportException $e) {
         }
 
-        return null;
+        return false;
     }
 
     /**
