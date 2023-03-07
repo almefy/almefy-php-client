@@ -95,7 +95,7 @@ class Session
     {
         $id = $array['id'] ?? null;
         $createdAt = $array['createdAt'] ?? date(DATE_ATOM);
-        $identifier = $array['identityIdentifier'] ?? null;
+        $identifier = $array['identifier'] ?? null;
         $expires = $array['expiresAt'] ?? null;
         if (is_int($expires)) {
             $expires = date(DATE_ATOM, $expires);
