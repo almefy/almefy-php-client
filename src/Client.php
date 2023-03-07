@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.4';
+    const VERSION = '0.9.5';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -192,13 +192,20 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    public function authenticate(AuthenticationChallenge $token): bool
+    /**
+     * @return AuthenticationResult|bool
+     */
+    public function authenticate(AuthenticationChallenge $token)
     {
         try {
-            $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
+            $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
                 'challenge' => $token->getChallenge(),
                 'otp' => $token->getOtp()
             ]);
+
+            if (!empty($response)) {
+                return AuthenticationResult::fromArray($response);
+            }
 
             return true;
 
