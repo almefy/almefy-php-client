@@ -31,16 +31,19 @@ class Session
 
     private ?string $updatedAt;
 
+    private ?string $deviceLabel;
+
     /**
      * Session constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, ?string $identifier, ?string $expires, ?string $updatedAt)
+    public function __construct(?string $id, ?string $createdAt, ?string $identifier, ?string $expires, ?string $updatedAt, ?string $deviceLabel)
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
         $this->identifier = $identifier;
         $this->expiresAt = $expires;
         $this->updatedAt = $updatedAt;
+        $this->deviceLabel = $deviceLabel;
     }
 
     public function getId(): ?string
@@ -66,6 +69,11 @@ class Session
     public function getUpdatedAt(): ?string
     {
         return $this->updatedAt;
+    }
+
+    public function getDeviceLabel(): ?string
+    {
+        return $this->deviceLabel;
     }
 
     public function withUpdatedExpiration(string $updatedAt, string $expiresAt): Session
@@ -94,7 +102,9 @@ class Session
         }
         $updatedAt = $array['updatedAt'] ?? date(DATE_ATOM);
 
-        return new Session($id, $createdAt, $identifier, $expires, $updatedAt);
+        $deviceLabel = $array['deviceLabel'] ?? null;
+
+        return new Session($id, $createdAt, $identifier, $expires, $updatedAt, $deviceLabel);
     }
 
     /**

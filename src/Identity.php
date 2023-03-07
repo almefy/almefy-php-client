@@ -40,9 +40,14 @@ class Identity
     private array $tokens;
 
     /**
+     * @var Session[]
+     */
+    private array $sessions;
+
+    /**
      * Identity constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, bool $locked, ?string $identifier, ?string $nickname, ?string $label, ?string $role, array $tokens = [])
+    public function __construct(?string $id, ?string $createdAt, bool $locked, ?string $identifier, ?string $nickname, ?string $label, ?string $role, array $tokens = [], array $sessions = [])
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -52,6 +57,7 @@ class Identity
         $this->label = $label;
         $this->role = $role;
         $this->tokens = $tokens;
+        $this->sessions = $sessions;
     }
 
     public function getId(): ?string
@@ -103,6 +109,14 @@ class Identity
         return $this->tokens;
     }
 
+    /**
+     * @return Session[]
+     */
+    public function getSessions(): array
+    {
+        return $this->sessions;
+    }
+
     public static function fromArray(array $array = []): Identity
     {
         $id = $array['id'] ?? null;
@@ -112,13 +126,18 @@ class Identity
         $nickname = $array['nickname'] ?? null;
         $label = $array['label'] ?? null;
         $role = $array['role'] ?? null;
-        $tokens = [];
 
+        $tokens = [];
         foreach ($array['tokens'] as $item) {
             $tokens[] = Token::fromArray($item);
         }
 
-        return new Identity($id, $createdAt, $locked, $identifier, $nickname, $label, $role, $tokens);
+        $sessions = [];
+        foreach ($array['sessions'] as $item) {
+            $sessions[] = Session::fromArray($item);
+        }
+
+        return new Identity($id, $createdAt, $locked, $identifier, $nickname, $label, $role, $tokens, $sessions);
     }
 
 }
