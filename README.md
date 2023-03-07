@@ -25,7 +25,7 @@ ALMEFY_SECRET=...
 **Almefy PHP Client** is available on Packagist as the [almefy/client](http://packagist.org/packages/almefy/client)
 package. Run `composer require almefy/client` from the root of your project in terminal, and you are done. If you
 cannot use `composer` for any reasons you can download the [latest version](https://github.com/almefy/almefy-php-client/releases)
-from GitHub. The minimum PHP version currently supported is 7.4.
+from GitHub. The minimum PHP version currently supported is 8.0.
 
 ### Client Initialization
 
