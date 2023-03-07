@@ -28,7 +28,7 @@ class AuthenticationResult
     /**
      * AuthenticationToken constructor.
      */
-    public function __construct(?string $identifier, ?string $challenge, ?string $session)
+    public function __construct(?string $identifier, ?string $challenge, ?Session $session)
     {
         $this->identifier = $identifier;
         $this->role = $challenge;
