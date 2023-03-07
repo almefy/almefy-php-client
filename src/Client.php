@@ -192,10 +192,7 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    /**
-     * @return AuthenticationResult|bool
-     */
-    public function authenticate(AuthenticationChallenge $token)
+    public function authenticate(AuthenticationChallenge $token): bool|AuthenticationResult
     {
         try {
             $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
