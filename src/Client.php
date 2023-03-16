@@ -150,6 +150,11 @@ class Client
         return Session::fromSessionArray($response['items'] ?? []);
     }
 
+    public function logoutSession(string $sessionId): void
+    {
+        $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionId));
+    }
+
     public function enrollIdentity(string $identifier, array $options = []): EnrollmentToken
     {
         $defaults = [
