@@ -175,6 +175,9 @@ class Client
         return EnrollmentToken::fromArray($response);
     }
 
+    /**
+     * @deprecated Use enrollIdentity() instead
+     */
     public function provisionIdentity(string $identifier, array $options = []): EnrollmentToken
     {
         return $this->enrollIdentity($identifier, $options);
