@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.5';
+    const VERSION = '1.0.1';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -48,7 +48,7 @@ class Client
 
     private string $secret;
 
-    private $handle = null;
+    private mixed $handle = null;
 
     /**
      * Client constructor.
@@ -150,6 +150,11 @@ class Client
         return Session::fromSessionArray($response['items'] ?? []);
     }
 
+    public function logoutSession(string $sessionId): void
+    {
+        $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionId));
+    }
+
     public function enrollIdentity(string $identifier, array $options = []): EnrollmentToken
     {
         $defaults = [
@@ -170,6 +175,9 @@ class Client
         return EnrollmentToken::fromArray($response);
     }
 
+    /**
+     * @deprecated Use enrollIdentity() instead
+     */
     public function provisionIdentity(string $identifier, array $options = []): EnrollmentToken
     {
         return $this->enrollIdentity($identifier, $options);
@@ -192,10 +200,7 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    /**
-     * @return AuthenticationResult|bool
-     */
-    public function authenticate(AuthenticationChallenge $token)
+    public function authenticate(AuthenticationChallenge $token): bool|AuthenticationResult
     {
         try {
             $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
@@ -218,7 +223,7 @@ class Client
     /**
      * @throws NetworkException|ServerException
      */
-    protected function doRequest(string $method, string $url, array $data = null)
+    protected function doRequest(string $method, string $url, array $data = null): mixed
     {
         if (is_resource($this->handle)) {
             curl_reset($this->handle);
@@ -359,7 +364,7 @@ class Client
         return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp']);
     }
 
-    private function jsonEncode($data)
+    private function jsonEncode($data): bool|string|null
     {
         if (empty($data))
             return null;
@@ -383,7 +388,7 @@ class Client
         }
     }
 
-    private function base64UrlEncode($data)
+    private function base64UrlEncode($data): array|string
     {
         return str_replace('=', '', strtr(base64_encode($data), '+/', '-_'));
     }
