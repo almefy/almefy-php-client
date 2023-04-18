@@ -13,11 +13,11 @@
   ],
   "config": {
     "platform": {
-      "php": "8.0"
+      "php": "7.4"
     }
   },
   "require": {
-    "php": ">=8.0",
+    "php": ">=7.4",
     "ext-json": "*",
     "ext-curl": "*",
     "ext-mbstring": "*"
