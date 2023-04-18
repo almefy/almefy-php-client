@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '1.0.1';
+    const VERSION = '0.9.7';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -48,7 +48,7 @@ class Client
 
     private string $secret;
 
-    private mixed $handle = null;
+    private $handle = null;
 
     /**
      * Client constructor.
@@ -200,7 +200,10 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    public function authenticate(AuthenticationChallenge $token): bool|AuthenticationResult
+    /**
+     * @return bool|AuthenticationResult
+     */
+    public function authenticate(AuthenticationChallenge $token)
     {
         try {
             $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
@@ -223,7 +226,7 @@ class Client
     /**
      * @throws NetworkException|ServerException
      */
-    protected function doRequest(string $method, string $url, array $data = null): mixed
+    protected function doRequest(string $method, string $url, array $data = null)
     {
         if (is_resource($this->handle)) {
             curl_reset($this->handle);
@@ -364,7 +367,10 @@ class Client
         return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp']);
     }
 
-    private function jsonEncode($data): bool|string|null
+    /**
+     * @return bool|string|null
+     */
+    private function jsonEncode($data)
     {
         if (empty($data))
             return null;
@@ -388,7 +394,10 @@ class Client
         }
     }
 
-    private function base64UrlEncode($data): array|string
+    /**
+     * @return array|string
+     */
+    private function base64UrlEncode($data)
     {
         return str_replace('=', '', strtr(base64_encode($data), '+/', '-_'));
     }
