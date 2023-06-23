@@ -17,6 +17,10 @@
 
 namespace Almefy;
 
+use Almefy\Exception\JwtDecodeException;
+use Almefy\Exception\JwtExpiredException;
+use Almefy\Exception\JwtFormatException;
+use Almefy\Exception\JwtSignatureException;
 use Exception;
 use Almefy\Exception\NetworkException;
 use Almefy\Exception\ServerException;
@@ -34,7 +38,8 @@ class Client
     const PATCH_REQUEST = 'PATCH';
     const DELETE_REQUEST = 'DELETE';
 
-    const REQUEST_TIMESTAMP_LEEWAY = 10;
+    const JWT_LEEWAY_TIMESTAMP = 10;
+    const JWT_EXPIRE_DIFF = 10;
 
     const JSON_DEFAULT_DEPTH    = 512;
     const BASE64_PADDING_LENGTH = 4;
@@ -248,7 +253,8 @@ class Client
             'Accept: application/json',
             'Authorization: Bearer '.$this->createApiToken($method, $url, $body),
             'User-Agent: Almefy PHP Client '.self::VERSION.' (PHP '.phpversion().')',
-            'X-Client-Version: '.self::VERSION
+            'X-Client-Version: '.self::VERSION,
+            'X-Client-Time: '.time()
         ];
 
         if (in_array($method, [self::POST_REQUEST, self::PUT_REQUEST, self::PATCH_REQUEST])) {
@@ -316,7 +322,7 @@ class Client
             'aud' => $this->api,
             'iat' => time(),
             'nbf' => time(),
-            'exp' => time() + 10,
+            'exp' => time() + self::JWT_EXPIRE_DIFF,
             'method' => $method,
             'url' => $url,
             'bodyHash' => hash('sha256', $body)
@@ -336,32 +342,35 @@ class Client
     {
     }
 
+    /**
+     * @throws JwtFormatException|JwtDecodeException|JwtSignatureException|JwtExpiredException
+     */
     public function decodeJwt(string $jwt): AuthenticationChallenge
     {
         $tks = explode('.', $jwt);
         if (count($tks) != 3) {
-            throw new RuntimeException('JWT has wrong number of segments.');
+            throw new JwtFormatException('JWT has wrong number of segments.');
         }
 
         list($head64, $body64, $signature64) = $tks;
 
         if (null === ($header = $this->jsonDecode($this->base64UrlDecode($head64)))) {
-            throw new RuntimeException('JWT has invalid header encoding.');
+            throw new JwtDecodeException('JWT has invalid header encoding.');
         }
         if (null === ($body = $this->jsonDecode($this->base64UrlDecode($body64)))) {
-            throw new RuntimeException('JWT has invalid body encoding.');
+            throw new JwtDecodeException('JWT has invalid body encoding.');
         }
         if (null === ($signature = $this->base64UrlDecode($signature64))) {
-            throw new RuntimeException('JWT has invalid signature encoding.');
+            throw new JwtDecodeException('JWT has invalid signature encoding.');
         }
 
         if (hash_hmac('sha256', $head64.'.'.$body64, $this->base64UrlDecode($this->secret), true) !== $signature) {
-            throw new RuntimeException('JWT has invalid signature.');
+            throw new JwtSignatureException('JWT has invalid signature.');
         }
 
         $timestamp = time();
-        if ($body['iat'] - self::REQUEST_TIMESTAMP_LEEWAY > $timestamp || $timestamp > $body['exp'] + self::REQUEST_TIMESTAMP_LEEWAY) {
-            throw new RuntimeException('JWT credentials have expired.');
+        if ($body['iat'] - self::JWT_LEEWAY_TIMESTAMP > $timestamp || $timestamp > $body['exp'] + self::JWT_LEEWAY_TIMESTAMP) {
+            throw new JwtExpiredException('JWT credentials have expired.');
         }
 
         return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp']);
