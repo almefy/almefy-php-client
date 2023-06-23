@@ -17,7 +17,9 @@
 
 namespace Almefy\Exception;
 
-class TransportException extends \RuntimeException
-{
+use RuntimeException;
+use Throwable;
 
+class TransportException extends RuntimeException implements Throwable
+{
 }
