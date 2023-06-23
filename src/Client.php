@@ -38,7 +38,7 @@ class Client
     const PATCH_REQUEST = 'PATCH';
     const DELETE_REQUEST = 'DELETE';
 
-    const JWT_LEEWAY_TIMESTAMP = 10;
+    const JWT_LEEWAY_TIME = 10;
     const JWT_EXPIRE_DIFF = 10;
 
     const JSON_DEFAULT_DEPTH    = 512;
@@ -369,7 +369,7 @@ class Client
         }
 
         $timestamp = time();
-        if ($body['iat'] - self::JWT_LEEWAY_TIMESTAMP > $timestamp || $timestamp > $body['exp'] + self::JWT_LEEWAY_TIMESTAMP) {
+        if ($body['iat'] - self::JWT_LEEWAY_TIME > $timestamp || $timestamp > $body['exp'] + self::JWT_LEEWAY_TIME) {
             throw new JwtExpiredException('JWT credentials have expired.');
         }
 
