@@ -26,7 +26,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.3';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -357,7 +357,7 @@ class Client
         }
 
         $timestamp = time();
-        if ($body['iat'] - self::REQUEST_TIMESTAMP_LEEWAY > $timestamp || $timestamp > $body['iat'] + self::REQUEST_TIMESTAMP_LEEWAY) {
+        if ($body['iat'] - self::REQUEST_TIMESTAMP_LEEWAY > $timestamp || $timestamp > $body['exp'] + self::REQUEST_TIMESTAMP_LEEWAY) {
             throw new RuntimeException('JWT credentials have expired.');
         }
 
