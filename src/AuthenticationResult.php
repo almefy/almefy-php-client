@@ -54,7 +54,7 @@ class AuthenticationResult
     {
         $identifier = $array['identifier'] ?? null;
         $role = $array['role'] ?? null;
-        $session = Session::fromArray($array['session']) ?? null;
+        $session = isset($array['session']) ? Session::fromArray($array['session']) : null;
 
         return new AuthenticationResult($identifier, $role, $session);
     }
