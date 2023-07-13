@@ -19,31 +19,40 @@ namespace Almefy;
 
 class Session
 {
-    public const DEFAULT_TTL = 350;
-
     private ?string $id;
 
     private ?string $createdAt;
 
-    private ?string $identifier;
+    private ?string $updatedAt;
 
     private ?string $expiresAt;
 
-    private ?string $updatedAt;
+    private ?Token $token;
 
-    private ?string $deviceLabel;
+    public ?string $clientIp;
+
+    public ?string $clientLabel;
+
+    public ?string $clientBrowser;
+
+    public ?string $clientPlatform;
 
     /**
      * Session constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, ?string $identifier, ?string $expires, ?string $updatedAt, ?string $deviceLabel)
+    public function __construct(?string $id, ?string $createdAt, ?string $updatedAt, ?string $expiresAt, ?Token $token,
+                                ?string $clientIp, ?string $clientLabel, ?string $clientBrowser, ?string $clientPlatform
+    )
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
-        $this->identifier = $identifier;
-        $this->expiresAt = $expires;
         $this->updatedAt = $updatedAt;
-        $this->deviceLabel = $deviceLabel;
+        $this->expiresAt = $expiresAt;
+        $this->token = $token;
+        $this->clientIp = $clientIp;
+        $this->clientLabel = $clientLabel;
+        $this->clientBrowser = $clientBrowser;
+        $this->clientPlatform = $clientPlatform;
     }
 
     public function getId(): ?string
@@ -56,9 +65,9 @@ class Session
         return $this->createdAt;
     }
 
-    public function getIdentifier(): ?string
+    public function getUpdatedAt(): ?string
     {
-        return $this->identifier;
+        return $this->updatedAt;
     }
 
     public function getExpiresAt(): ?string
@@ -66,45 +75,45 @@ class Session
         return $this->expiresAt;
     }
 
-    public function getUpdatedAt(): ?string
+    public function getToken(): ?Token
     {
-        return $this->updatedAt;
+        return $this->token;
     }
 
-    public function getDeviceLabel(): ?string
+    public function getClientIp(): ?string
     {
-        return $this->deviceLabel;
+        return $this->clientIp;
     }
 
-    public function withUpdatedExpiration(string $updatedAt, string $expiresAt): Session
+    public function getClientLabel(): ?string
     {
-        $this->updatedAt = $updatedAt;
-        $this->expiresAt = $expiresAt;
-
-        return $this;
+        return $this->clientLabel;
     }
 
-    public function withUpdateAt(?string $updatedAt = null): Session
+    public function getClientBrowser(): ?string
     {
-        $this->updatedAt = $updatedAt ?? date(DATE_ATOM);
+        return $this->clientBrowser;
+    }
 
-        return $this;
+    public function getClientPlatform(): ?string
+    {
+        return $this->clientPlatform;
     }
 
     public static function fromArray($array): Session
     {
         $id = $array['id'] ?? null;
-        $createdAt = $array['createdAt'] ?? date(DATE_ATOM);
-        $identifier = $array['identifier'] ?? null;
-        $expires = $array['expiresAt'] ?? null;
-        if (is_int($expires)) {
-            $expires = date(DATE_ATOM, $expires);
-        }
-        $updatedAt = $array['updatedAt'] ?? date(DATE_ATOM);
+        $createdAt = $array['createdAt'] ?? null;
+        $updatedAt = $array['updatedAt'] ?? null;
+        $expiresAt = $array['expiresAt'] ?? null;
+        $clientIp = $array['clientIp'] ?? null;
+        $clientLabel = $array['clientLabel'] ?? null;
+        $clientBrowser = $array['clientBrowser'] ?? null;
+        $clientPlatform = $array['clientPlatform'] ?? null;
 
-        $deviceLabel = $array['deviceLabel'] ?? null;
+        $token = isset($array['token']) ? Token::fromArray($array['token']) : null;
 
-        return new Session($id, $createdAt, $identifier, $expires, $updatedAt, $deviceLabel);
+        return new Session($id, $createdAt, $updatedAt, $expiresAt, $token, $clientIp, $clientLabel, $clientBrowser, $clientPlatform);
     }
 
     /**
