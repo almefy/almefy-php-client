@@ -30,7 +30,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.9';
+    const VERSION = '0.9.10';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
