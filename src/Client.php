@@ -17,20 +17,26 @@
 
 namespace Almefy;
 
+use Almefy\Dto\AuthenticationChallenge;
+use Almefy\Dto\AuthenticationResult;
+use Almefy\Dto\Configuration;
+use Almefy\Dto\EnrollmentToken;
+use Almefy\Dto\Identity;
+use Almefy\Dto\Session;
 use Almefy\Exception\JwtDecodeException;
 use Almefy\Exception\JwtExpiredException;
 use Almefy\Exception\JwtFormatException;
 use Almefy\Exception\JwtSignatureException;
-use Exception;
 use Almefy\Exception\NetworkException;
 use Almefy\Exception\ServerException;
 use Almefy\Exception\TransportException;
+use Exception;
 use InvalidArgumentException;
 use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.10';
+    const VERSION = '0.9.11';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -155,9 +161,9 @@ class Client
         return Session::fromSessionArray($response['items'] ?? []);
     }
 
-    public function logoutSession(string $sessionId): void
+    public function logoutSession(string $id): void
     {
-        $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionId));
+        $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $id));
     }
 
     public function enrollIdentity(string $identifier, array $options = []): EnrollmentToken

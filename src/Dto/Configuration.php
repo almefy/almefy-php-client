@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Almefy;
+namespace Almefy\Dto;
 
 class Configuration
 {
@@ -24,16 +24,24 @@ class Configuration
 
     private ?string $authenticationUrl;
 
+    /**
+     * @deprecated Will not be used anymore
+     */
     private ?string $registrationUrl;
 
-    private bool $sessionSupport;
+    private bool $sessionsEnabled;
 
-    public function __construct(?string $websiteUrl, ?string $authenticationUrl, ?string $registrationUrl, bool $sessionSupport)
+    public function __construct(
+        ?string $websiteUrl,
+        ?string $authenticationUrl,
+        ?string $registrationUrl,
+        bool $sessionSupport
+    )
     {
         $this->websiteUrl = $websiteUrl;
         $this->authenticationUrl = $authenticationUrl;
         $this->registrationUrl = $registrationUrl;
-        $this->sessionSupport = $sessionSupport;
+        $this->sessionsEnabled = $sessionSupport;
     }
 
     public function getWebsiteUrl(): ?string
@@ -46,24 +54,27 @@ class Configuration
         return $this->authenticationUrl;
     }
 
+    /**
+     * @deprecated Will not be used anymore
+     */
     public function getRegistrationUrl(): ?string
     {
         return $this->registrationUrl;
     }
 
-    public function hasSessionSupport(): bool
+    public function hasSessionsEnabled(): bool
     {
-        return $this->sessionSupport;
+        return $this->sessionsEnabled;
     }
 
     public static function fromArray(array $array = []): Configuration
     {
-        $websiteUrl        = $array['websiteUrl'] ?? null;
-        $authenticationUrl = $array['authenticationUrl'] ?? null;
-        $registrationUrl   = $array['registrationUrl'] ?? null;
-        $sessionSupport    = $array['supportSessions'] === true;
-
-        return new Configuration($websiteUrl, $authenticationUrl, $registrationUrl, $sessionSupport);
+        return new Configuration(
+            $array['websiteUrl'] ?? null,
+            $array['authenticationUrl'] ?? null,
+            $array['registrationUrl'] ?? null,
+            $array['sessionsEnabled'] === true
+        );
     }
 
 }

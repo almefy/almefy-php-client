@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Almefy;
+namespace Almefy\Dto;
 
 class Token
 {
@@ -33,7 +33,13 @@ class Token
     /**
      * Device constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, ?string $name, ?string $label, ?string $model)
+    public function __construct(
+        ?string $id,
+        ?string $createdAt,
+        ?string $name,
+        ?string $label,
+        ?string $model
+    )
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -69,13 +75,26 @@ class Token
 
     public static function fromArray(array $array = []): Token
     {
-        $id    = $array['id'] ??  null;
-        $createdAt = $array['createdAt'] ?? null;
-        $name  = $array['name'] ?? null;
-        $label = $array['label'] ?? null;
-        $model = $array['model'] ?? null;
+        return new Token(
+            $array['id'] ??  null,
+            $array['createdAt'] ?? null,
+            $array['name'] ?? null,
+            $array['label'] ?? null,
+            $array['model'] ?? null
+        );
+    }
 
-        return new Token($id, $createdAt, $name, $label, $model);
+    /**
+     * @return Token[]
+     */
+    public static function fromTokenArray($array): array
+    {
+        $tokens = [];
+        foreach ($array as $item) {
+            $tokens[] = Token::fromArray($item);
+        }
+
+        return $tokens;
     }
 
 }

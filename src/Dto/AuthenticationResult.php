@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Almefy;
+namespace Almefy\Dto;
 
 class AuthenticationResult
 {
@@ -28,7 +28,11 @@ class AuthenticationResult
     /**
      * AuthenticationToken constructor.
      */
-    public function __construct(?string $identifier, ?string $challenge, ?Session $session)
+    public function __construct(
+        ?string $identifier,
+        ?string $challenge,
+        ?Session $session
+    )
     {
         $this->identifier = $identifier;
         $this->role = $challenge;
@@ -52,11 +56,11 @@ class AuthenticationResult
 
     public static function fromArray(array $array = []): AuthenticationResult
     {
-        $identifier = $array['identifier'] ?? null;
-        $role = $array['role'] ?? null;
-        $session = isset($array['session']) ? Session::fromArray($array['session']) : null;
-
-        return new AuthenticationResult($identifier, $role, $session);
+        return new AuthenticationResult(
+            $array['identifier'] ?? null,
+            $array['role'] ?? null,
+            isset($array['session']) ? Session::fromArray($array['session']) : null
+        );
     }
 
 }

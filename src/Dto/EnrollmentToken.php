@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Almefy;
+namespace Almefy\Dto;
 
 class EnrollmentToken
 {
@@ -31,9 +31,15 @@ class EnrollmentToken
     private ?Identity $identity;
 
     /**
-     * ProvisioningToken constructor.
+     * EnrollmentToken constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, ?string $expiresAt, ?string $base64ImageData, ?Identity $identity)
+    public function __construct(
+        ?string $id,
+        ?string $createdAt,
+        ?string $expiresAt,
+        ?string $base64ImageData,
+        ?Identity $identity
+    )
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -69,12 +75,12 @@ class EnrollmentToken
 
     public static function fromArray(array $array = []): EnrollmentToken
     {
-        $id = $array['id'] ?? null;
-        $createdAt = $array['createdAt'] ?? null;
-        $expiresAt = $array['expiresAt'] ?? null;
-        $base64ImageData = $array['base64ImageData'] ?? null;
-        $identity = Identity::fromArray($array['identity']);
-
-        return new EnrollmentToken($id, $createdAt, $expiresAt, $base64ImageData, $identity);
+        return new EnrollmentToken(
+            $array['id'] ?? null,
+            $array['createdAt'] ?? null,
+            $array['expiresAt'] ?? null,
+            $array['base64ImageData'] ?? null,
+            isset($array['identity']) ? Identity::fromArray($array['identity']) : null
+        );
     }
 }

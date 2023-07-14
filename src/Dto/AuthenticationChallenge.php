@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Almefy;
+namespace Almefy\Dto;
 
 class AuthenticationChallenge
 {
@@ -29,7 +29,11 @@ class AuthenticationChallenge
     /**
      * AuthenticationToken constructor.
      */
-    public function __construct(?string $challenge, ?string $identifier, ?string $otp)
+    public function __construct(
+        ?string $challenge,
+        ?string $identifier,
+        ?string $otp
+    )
     {
         $this->challenge = $challenge;
         $this->identifier = $identifier;
@@ -53,11 +57,10 @@ class AuthenticationChallenge
 
     public static function fromArray(array $array = []): AuthenticationChallenge
     {
-        $challenge = $array['challenge'] ?? null;
-        $identifier = $array['identifier'] ?? null;
-        $otp = $array['otp'] ?? null;
-
-        return new AuthenticationChallenge($challenge, $identifier, $otp);
+        return new AuthenticationChallenge(
+            $array['challenge'] ?? null,
+            $array['identifier'] ?? null,
+            $array['otp'] ?? null);
     }
 
 }
