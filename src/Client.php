@@ -17,12 +17,6 @@
 
 namespace Almefy;
 
-use Almefy\Dto\AuthenticationChallenge;
-use Almefy\Dto\AuthenticationResult;
-use Almefy\Dto\Configuration;
-use Almefy\Dto\EnrollmentToken;
-use Almefy\Dto\Identity;
-use Almefy\Dto\Session;
 use Almefy\Exception\JwtDecodeException;
 use Almefy\Exception\JwtExpiredException;
 use Almefy\Exception\JwtFormatException;
@@ -212,18 +206,18 @@ class Client
     }
 
     /**
-     * @return bool|AuthenticationResult
+     * @return bool|Identity
      */
     public function authenticate(AuthenticationChallenge $token)
     {
         try {
             $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
-                'challenge' => $token->getChallenge(),
+                'challenge' => $token->getChallengeId(),
                 'otp' => $token->getOtp()
             ]);
 
             if (!empty($response)) {
-                return AuthenticationResult::fromArray($response);
+                return Identity::fromArray($response);
             }
 
             return true;
@@ -379,7 +373,7 @@ class Client
             throw new JwtExpiredException('JWT credentials have expired.');
         }
 
-        return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp']);
+        return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp'], $body['session']);
     }
 
     /**
