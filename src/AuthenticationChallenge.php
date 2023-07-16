@@ -15,28 +15,38 @@
  * limitations under the License.
  */
 
-namespace Almefy\Dto;
+namespace Almefy;
 
-class AuthenticationResult
+class AuthenticationChallenge
 {
+
+    private ?string $challengeId;
+
     private ?string $identifier;
 
-    private ?string $role;
+    private ?string $otp;
 
-    private ?Session $session;
+    private ?string $sessionId;
 
     /**
      * AuthenticationToken constructor.
      */
     public function __construct(
-        ?string $identifier,
         ?string $challenge,
-        ?Session $session
+        ?string $identifier,
+        ?string $otp,
+        ?string $sessionId
     )
     {
+        $this->challengeId = $challenge;
         $this->identifier = $identifier;
-        $this->role = $challenge;
-        $this->session = $session;
+        $this->otp = $otp;
+        $this->sessionId = $sessionId;
+    }
+
+    public function getChallengeId(): ?string
+    {
+        return $this->challengeId;
     }
 
     public function getIdentifier(): ?string
@@ -44,22 +54,23 @@ class AuthenticationResult
         return $this->identifier;
     }
 
-    public function getRole(): ?string
+    public function getOtp(): ?string
     {
-        return $this->role;
+        return $this->otp;
     }
 
-    public function getSession(): ?Session
+    public function getSessionId(): ?string
     {
-        return $this->session;
+        return $this->sessionId;
     }
 
-    public static function fromArray(array $array = []): AuthenticationResult
+    public static function fromArray(array $array = []): AuthenticationChallenge
     {
-        return new AuthenticationResult(
+        return new AuthenticationChallenge(
+            $array['challenge'] ?? null,
             $array['identifier'] ?? null,
-            $array['role'] ?? null,
-            isset($array['session']) ? Session::fromArray($array['session']) : null
+            $array['otp'] ?? null,
+            $array['session'] ?? null
         );
     }
 

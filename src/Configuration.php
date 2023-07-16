@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Almefy\Dto;
+namespace Almefy;
 
 class Configuration
 {

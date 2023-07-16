@@ -15,37 +15,40 @@
  * limitations under the License.
  */
 
-namespace Almefy\Dto;
+namespace Almefy;
 
-class EnrollmentToken
+class Session
 {
-
     private ?string $id;
 
     private ?string $createdAt;
 
+    private ?string $updatedAt;
+
     private ?string $expiresAt;
 
-    private ?string $base64ImageData;
+    private ?SessionClient $client;
 
-    private ?Identity $identity;
+    private ?Token $token;
 
     /**
-     * EnrollmentToken constructor.
+     * Session constructor.
      */
     public function __construct(
-        ?string $id,
-        ?string $createdAt,
-        ?string $expiresAt,
-        ?string $base64ImageData,
-        ?Identity $identity
+        ?string        $id,
+        ?string        $createdAt,
+        ?string        $updatedAt,
+        ?string        $expiresAt,
+        ?SessionClient $client,
+        ?Token         $token
     )
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
         $this->expiresAt = $expiresAt;
-        $this->base64ImageData = $base64ImageData;
-        $this->identity = $identity;
+        $this->client = $client;
+        $this->token = $token;
     }
 
     public function getId(): ?string
@@ -58,29 +61,48 @@ class EnrollmentToken
         return $this->createdAt;
     }
 
+    public function getUpdatedAt(): ?string
+    {
+        return $this->updatedAt;
+    }
+
     public function getExpiresAt(): ?string
     {
         return $this->expiresAt;
     }
 
-    public function getBase64ImageData(): ?string
+    public function getClient(): ?SessionClient
     {
-        return $this->base64ImageData;
+        return $this->client;
     }
 
-    public function getIdentity(): ?Identity
+    public function getToken(): ?Token
     {
-        return $this->identity;
+        return $this->token;
     }
 
-    public static function fromArray(array $array = []): EnrollmentToken
+    public static function fromArray($array): Session
     {
-        return new EnrollmentToken(
+        return new Session(
             $array['id'] ?? null,
             $array['createdAt'] ?? null,
+            $array['updatedAt'] ?? null,
             $array['expiresAt'] ?? null,
-            $array['base64ImageData'] ?? null,
-            isset($array['identity']) ? Identity::fromArray($array['identity']) : null
+            isset($array['client']) ? SessionClient::fromArray($array['client']) : null,
+            isset($array['token']) ? Token::fromArray($array['token']) : null,
         );
+    }
+
+    /**
+     * @return Session[]
+     */
+    public static function fromSessionArray($array): array
+    {
+        $sessions = [];
+        foreach ($array as $item) {
+            $sessions[] = Session::fromArray($item);
+        }
+
+        return $sessions;
     }
 }

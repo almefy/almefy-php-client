@@ -15,37 +15,37 @@
  * limitations under the License.
  */
 
-namespace Almefy\Dto;
+namespace Almefy;
 
-class Token
+class EnrollmentToken
 {
 
     private ?string $id;
 
     private ?string $createdAt;
 
-    private ?string $name;
+    private ?string $expiresAt;
 
-    private ?string $label;
+    private ?string $base64ImageData;
 
-    private ?string $model;
+    private ?Identity $identity;
 
     /**
-     * Device constructor.
+     * EnrollmentToken constructor.
      */
     public function __construct(
         ?string $id,
         ?string $createdAt,
-        ?string $name,
-        ?string $label,
-        ?string $model
+        ?string $expiresAt,
+        ?string $base64ImageData,
+        ?Identity $identity
     )
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
-        $this->name = $name;
-        $this->label = $label;
-        $this->model = $model;
+        $this->expiresAt = $expiresAt;
+        $this->base64ImageData = $base64ImageData;
+        $this->identity = $identity;
     }
 
     public function getId(): ?string
@@ -58,43 +58,29 @@ class Token
         return $this->createdAt;
     }
 
-    public function getName(): ?string
+    public function getExpiresAt(): ?string
     {
-        return $this->name;
+        return $this->expiresAt;
     }
 
-    public function getLabel(): ?string
+    public function getBase64ImageData(): ?string
     {
-        return $this->label;
+        return $this->base64ImageData;
     }
 
-    public function getModel(): ?string
+    public function getIdentity(): ?Identity
     {
-        return $this->model;
+        return $this->identity;
     }
 
-    public static function fromArray(array $array = []): Token
+    public static function fromArray(array $array = []): EnrollmentToken
     {
-        return new Token(
-            $array['id'] ??  null,
+        return new EnrollmentToken(
+            $array['id'] ?? null,
             $array['createdAt'] ?? null,
-            $array['name'] ?? null,
-            $array['label'] ?? null,
-            $array['model'] ?? null
+            $array['expiresAt'] ?? null,
+            $array['base64ImageData'] ?? null,
+            isset($array['identity']) ? Identity::fromArray($array['identity']) : null
         );
     }
-
-    /**
-     * @return Token[]
-     */
-    public static function fromTokenArray($array): array
-    {
-        $tokens = [];
-        foreach ($array as $item) {
-            $tokens[] = Token::fromArray($item);
-        }
-
-        return $tokens;
-    }
-
 }

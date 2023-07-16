@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-namespace Almefy\Dto;
+namespace Almefy;
 
-class Client
+class SessionClient
 {
 
     private ?string $ip;
@@ -72,9 +72,9 @@ class Client
         return $this->location;
     }
 
-    public static function fromArray(array $array = []): Client
+    public static function fromArray(array $array = []): SessionClient
     {
-        return new Client(
+        return new SessionClient(
             $array['ip'] ?? null,
             $array['label'] ?? null,
             $array['browser'] ?? null,

@@ -15,34 +15,28 @@
  * limitations under the License.
  */
 
-namespace Almefy\Dto;
+namespace Almefy;
 
-class AuthenticationChallenge
+class AuthenticationResult
 {
-
-    private ?string $challenge;
-
     private ?string $identifier;
 
-    private ?string $otp;
+    private ?string $role;
+
+    private ?Session $session;
 
     /**
      * AuthenticationToken constructor.
      */
     public function __construct(
-        ?string $challenge,
         ?string $identifier,
-        ?string $otp
+        ?string $challenge,
+        ?Session $session
     )
     {
-        $this->challenge = $challenge;
         $this->identifier = $identifier;
-        $this->otp = $otp;
-    }
-
-    public function getChallenge(): ?string
-    {
-        return $this->challenge;
+        $this->role = $challenge;
+        $this->session = $session;
     }
 
     public function getIdentifier(): ?string
@@ -50,17 +44,23 @@ class AuthenticationChallenge
         return $this->identifier;
     }
 
-    public function getOtp(): ?string
+    public function getRole(): ?string
     {
-        return $this->otp;
+        return $this->role;
     }
 
-    public static function fromArray(array $array = []): AuthenticationChallenge
+    public function getSession(): ?Session
     {
-        return new AuthenticationChallenge(
-            $array['challenge'] ?? null,
+        return $this->session;
+    }
+
+    public static function fromArray(array $array = []): AuthenticationResult
+    {
+        return new AuthenticationResult(
             $array['identifier'] ?? null,
-            $array['otp'] ?? null);
+            $array['role'] ?? null,
+            isset($array['session']) ? Session::fromArray($array['session']) : null
+        );
     }
 
 }
