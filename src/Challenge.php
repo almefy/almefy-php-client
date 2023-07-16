@@ -17,7 +17,7 @@
 
 namespace Almefy;
 
-class AuthenticationChallenge
+class Challenge
 {
 
     private ?string $challengeId;
@@ -64,9 +64,9 @@ class AuthenticationChallenge
         return $this->sessionId;
     }
 
-    public static function fromArray(array $array = []): AuthenticationChallenge
+    public static function fromArray(array $array = []): Challenge
     {
-        return new AuthenticationChallenge(
+        return new Challenge(
             $array['challenge'] ?? null,
             $array['identifier'] ?? null,
             $array['otp'] ?? null,

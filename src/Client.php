@@ -208,7 +208,7 @@ class Client
     /**
      * @return bool|Identity
      */
-    public function authenticate(AuthenticationChallenge $token)
+    public function authenticate(Challenge $token)
     {
         try {
             $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
@@ -345,7 +345,7 @@ class Client
     /**
      * @throws JwtFormatException|JwtDecodeException|JwtSignatureException|JwtExpiredException
      */
-    public function decodeJwt(string $jwt): AuthenticationChallenge
+    public function decodeJwt(string $jwt): Challenge
     {
         $tks = explode('.', $jwt);
         if (count($tks) != 3) {
@@ -373,7 +373,7 @@ class Client
             throw new JwtExpiredException('JWT credentials have expired.');
         }
 
-        return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp'], $body['session']);
+        return new Challenge($body['jti'], $body['sub'], $body['otp'], $body['session']);
     }
 
     /**
