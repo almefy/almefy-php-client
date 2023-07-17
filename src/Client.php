@@ -30,7 +30,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '0.9.12';
+    const VERSION = '0.9.13';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -373,7 +373,7 @@ class Client
             throw new JwtExpiredException('JWT credentials have expired.');
         }
 
-        return new Challenge($body['jti'], $body['sub'], $body['otp'], $body['session']);
+        return new Challenge($body['jti'], $body['sub'], $body['otp'], $body['sid']);
     }
 
     /**
