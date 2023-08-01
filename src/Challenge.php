@@ -17,28 +17,35 @@
 
 namespace Almefy;
 
-class AuthenticationChallenge
+class Challenge
 {
 
-    private ?string $challenge;
+    private ?string $challengeId;
 
     private ?string $identifier;
 
     private ?string $otp;
 
+    private ?string $sessionId;
+
     /**
-     * AuthenticationToken constructor.
+     * Challenge constructor.
      */
-    public function __construct(?string $challenge, ?string $identifier, ?string $otp)
+    public function __construct(
+        ?string $challengeId,
+        ?string $identifier,
+        ?string $otp,
+        ?string $sessionId)
     {
-        $this->challenge = $challenge;
+        $this->challengeId = $challengeId;
         $this->identifier = $identifier;
         $this->otp = $otp;
+        $this->sessionId = $sessionId;
     }
 
-    public function getChallenge(): ?string
+    public function getChallengeId(): ?string
     {
-        return $this->challenge;
+        return $this->challengeId;
     }
 
     public function getIdentifier(): ?string
@@ -51,13 +58,19 @@ class AuthenticationChallenge
         return $this->otp;
     }
 
-    public static function fromArray(array $array = []): AuthenticationChallenge
+    public function getSessionId(): ?string
     {
-        $challenge = $array['challenge'] ?? null;
-        $identifier = $array['identifier'] ?? null;
-        $otp = $array['otp'] ?? null;
+        return $this->sessionId;
+    }
 
-        return new AuthenticationChallenge($challenge, $identifier, $otp);
+    public static function fromArray(array $array = []): Challenge
+    {
+        return new Challenge(
+            $array['challenge'] ?? null,
+            $array['identifier'] ?? null,
+            $array['otp'] ?? null,
+            $array['session'] ?? null
+        );
     }
 
 }

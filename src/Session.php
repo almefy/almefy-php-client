@@ -19,31 +19,36 @@ namespace Almefy;
 
 class Session
 {
-    public const DEFAULT_TTL = 350;
-
     private ?string $id;
 
     private ?string $createdAt;
 
-    private ?string $identifier;
+    private ?string $updatedAt;
 
     private ?string $expiresAt;
 
-    private ?string $updatedAt;
+    private ?SessionClient $client;
 
-    private ?string $deviceLabel;
+    private ?Token $token;
 
     /**
      * Session constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, ?string $identifier, ?string $expires, ?string $updatedAt, ?string $deviceLabel)
+    public function __construct(
+        ?string        $id,
+        ?string        $createdAt,
+        ?string        $updatedAt,
+        ?string        $expiresAt,
+        ?SessionClient $client,
+        ?Token         $token
+    )
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
-        $this->identifier = $identifier;
-        $this->expiresAt = $expires;
         $this->updatedAt = $updatedAt;
-        $this->deviceLabel = $deviceLabel;
+        $this->expiresAt = $expiresAt;
+        $this->client = $client;
+        $this->token = $token;
     }
 
     public function getId(): ?string
@@ -51,14 +56,9 @@ class Session
         return $this->id;
     }
 
-    public function getCreatedAt(): ?string
+    public function getUpdatedAt(): ?string
     {
-        return $this->createdAt;
-    }
-
-    public function getIdentifier(): ?string
-    {
-        return $this->identifier;
+        return $this->updatedAt;
     }
 
     public function getExpiresAt(): ?string
@@ -66,45 +66,26 @@ class Session
         return $this->expiresAt;
     }
 
-    public function getUpdatedAt(): ?string
+    public function getClient(): ?SessionClient
     {
-        return $this->updatedAt;
+        return $this->client;
     }
 
-    public function getDeviceLabel(): ?string
+    public function getToken(): ?Token
     {
-        return $this->deviceLabel;
-    }
-
-    public function withUpdatedExpiration(string $updatedAt, string $expiresAt): Session
-    {
-        $this->updatedAt = $updatedAt;
-        $this->expiresAt = $expiresAt;
-
-        return $this;
-    }
-
-    public function withUpdateAt(?string $updatedAt = null): Session
-    {
-        $this->updatedAt = $updatedAt ?? date(DATE_ATOM);
-
-        return $this;
+        return $this->token;
     }
 
     public static function fromArray($array): Session
     {
-        $id = $array['id'] ?? null;
-        $createdAt = $array['createdAt'] ?? date(DATE_ATOM);
-        $identifier = $array['identifier'] ?? null;
-        $expires = $array['expiresAt'] ?? null;
-        if (is_int($expires)) {
-            $expires = date(DATE_ATOM, $expires);
-        }
-        $updatedAt = $array['updatedAt'] ?? date(DATE_ATOM);
-
-        $deviceLabel = $array['deviceLabel'] ?? null;
-
-        return new Session($id, $createdAt, $identifier, $expires, $updatedAt, $deviceLabel);
+        return new Session(
+            $array['id'] ?? null,
+            $array['createdAt'] ?? null,
+            $array['updatedAt'] ?? null,
+            $array['expiresAt'] ?? null,
+            isset($array['client']) ? SessionClient::fromArray($array['client']) : null,
+            isset($array['token']) ? Token::fromArray($array['token']) : null,
+        );
     }
 
     /**
@@ -113,11 +94,11 @@ class Session
     public static function fromSessionArray($array): array
     {
         $sessions = [];
-        foreach ($array as $key => $item) {
-            $session = Session::fromArray($item);
-            $sessions[$session->getId()] = $session;
+        foreach ($array as $item) {
+            $sessions[] = Session::fromArray($item);
         }
 
         return $sessions;
     }
+
 }

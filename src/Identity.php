@@ -39,6 +39,8 @@ class Identity
      */
     private array $tokens;
 
+    private bool $sessionsEnabled;
+
     /**
      * @var Session[]
      */
@@ -47,7 +49,18 @@ class Identity
     /**
      * Identity constructor.
      */
-    public function __construct(?string $id, ?string $createdAt, bool $locked, ?string $identifier, ?string $nickname, ?string $label, ?string $role, array $tokens = [], array $sessions = [])
+    public function __construct(
+        ?string $id,
+        ?string $createdAt,
+        bool $locked,
+        ?string $identifier,
+        ?string $nickname,
+        ?string $label,
+        ?string $role,
+        array $tokens,
+        bool $sessionsEnabled,
+        array $sessions
+    )
     {
         $this->id = $id;
         $this->createdAt = $createdAt;
@@ -57,6 +70,7 @@ class Identity
         $this->label = $label;
         $this->role = $role;
         $this->tokens = $tokens;
+        $this->sessionsEnabled =$sessionsEnabled;
         $this->sessions = $sessions;
     }
 
@@ -90,7 +104,9 @@ class Identity
         return $this->label;
     }
 
-    // For BC compatibility, getLabel() should be used
+    /**
+     * @deprecated Use getLabel() instead
+     */
     public function getName(): ?string
     {
         return $this->label;
@@ -109,6 +125,11 @@ class Identity
         return $this->tokens;
     }
 
+    public function hasSessionsEnabled(): bool
+    {
+        return $this->sessionsEnabled;
+    }
+
     /**
      * @return Session[]
      */
@@ -119,25 +140,18 @@ class Identity
 
     public static function fromArray(array $array = []): Identity
     {
-        $id = $array['id'] ?? null;
-        $createdAt = $array['createdAt'] ?? null;
-        $locked = $array['locked'] ?? false;
-        $identifier = $array['identifier'] ?? null;
-        $nickname = $array['nickname'] ?? null;
-        $label = $array['label'] ?? null;
-        $role = $array['role'] ?? null;
-
-        $tokens = [];
-        foreach ($array['tokens'] as $item) {
-            $tokens[] = Token::fromArray($item);
-        }
-
-        $sessions = [];
-        foreach ($array['sessions'] as $item) {
-            $sessions[] = Session::fromArray($item);
-        }
-
-        return new Identity($id, $createdAt, $locked, $identifier, $nickname, $label, $role, $tokens, $sessions);
+        return new Identity(
+            $array['id'] ?? null,
+            $array['createdAt'] ?? null,
+            $array['locked'] ?? false,
+            $array['identifier'] ?? null,
+            $array['nickname'] ?? null,
+            $array['label'] ?? null,
+            $array['role'] ?? null,
+            isset($array['tokens']) ? Token::fromTokenArray($array['tokens']) : [],
+            $array['sessionsEnabled'] ?? false,
+            isset($array['sessions']) ? Session::fromSessionArray($array['sessions']) : []
+        );
     }
 
 }

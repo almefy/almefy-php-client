@@ -30,7 +30,7 @@ use RuntimeException;
 
 class Client
 {
-    const VERSION = '1.0.4';
+    const VERSION = '1.0.5';
 
     const GET_REQUEST = 'GET';
     const POST_REQUEST = 'POST';
@@ -155,9 +155,9 @@ class Client
         return Session::fromSessionArray($response['items'] ?? []);
     }
 
-    public function logoutSession(string $sessionId): void
+    public function logoutSession(string $id): void
     {
-        $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionId));
+        $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $id));
     }
 
     public function enrollIdentity(string $identifier, array $options = []): EnrollmentToken
@@ -205,16 +205,16 @@ class Client
         $this->doRequest(self::DELETE_REQUEST, sprintf('%s/v1/entity/tokens/%s', $this->api, $id));
     }
 
-    public function authenticate(AuthenticationChallenge $token): bool|AuthenticationResult
+    public function authenticate(Challenge $token): bool|Identity
     {
         try {
             $response = $this->doRequest(self::POST_REQUEST, sprintf('%s/v1/entity/identities/%s/authenticate', $this->api, urlencode($token->getIdentifier())), [
-                'challenge' => $token->getChallenge(),
+                'challenge' => $token->getChallengeId(),
                 'otp' => $token->getOtp()
             ]);
 
             if (!empty($response)) {
-                return AuthenticationResult::fromArray($response);
+                return Identity::fromArray($response);
             }
 
             return true;
@@ -342,7 +342,7 @@ class Client
     /**
      * @throws JwtFormatException|JwtDecodeException|JwtSignatureException|JwtExpiredException
      */
-    public function decodeJwt(string $jwt): AuthenticationChallenge
+    public function decodeJwt(string $jwt): Challenge
     {
         $tks = explode('.', $jwt);
         if (count($tks) != 3) {
@@ -370,7 +370,7 @@ class Client
             throw new JwtExpiredException('JWT credentials have expired.');
         }
 
-        return new AuthenticationChallenge($body['jti'], $body['sub'], $body['otp']);
+        return new Challenge($body['jti'], $body['sub'], $body['otp'], $body['sid'] ?? null);
     }
 
     private function jsonEncode($data): bool|string|null
