@@ -124,9 +124,9 @@ class Client
         return Identity::fromArray($response ?? []);
     }
 
-    public function getSession(string $sessionsId): Session
+    public function getSession(string $sessionId): Session
     {
-        $response = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionsId));
+        $response = $this->doRequest(self::GET_REQUEST, sprintf('%s/v1/entity/sessions/%s', $this->api, $sessionId));
 
         return Session::fromArray($response ?? []);
     }
