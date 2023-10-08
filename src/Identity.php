@@ -39,8 +39,6 @@ class Identity
      */
     private array $tokens;
 
-    private bool $sessionsEnabled;
-
     /**
      * @var Session[]
      */
@@ -58,7 +56,6 @@ class Identity
         ?string $label,
         ?string $role,
         array $tokens,
-        bool $sessionsEnabled,
         array $sessions
     )
     {
@@ -70,7 +67,6 @@ class Identity
         $this->label = $label;
         $this->role = $role;
         $this->tokens = $tokens;
-        $this->sessionsEnabled =$sessionsEnabled;
         $this->sessions = $sessions;
     }
 
@@ -125,11 +121,6 @@ class Identity
         return $this->tokens;
     }
 
-    public function hasSessionsEnabled(): bool
-    {
-        return $this->sessionsEnabled;
-    }
-
     /**
      * @return Session[]
      */
@@ -149,7 +140,6 @@ class Identity
             $array['label'] ?? null,
             $array['role'] ?? null,
             isset($array['tokens']) ? Token::fromTokenArray($array['tokens']) : [],
-            $array['sessionsEnabled'] ?? false,
             isset($array['sessions']) ? Session::fromSessionArray($array['sessions']) : []
         );
     }
